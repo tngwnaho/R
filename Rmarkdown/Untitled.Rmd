@@ -2,16 +2,17 @@
 title: "bootstarap_test.R"
 author: "Naho Tanigawa"
 date: "9/12/2020"
-output: github_document
+output: git_document
 ---
 
 irisデータを利用して、ブートストラップ標本を作成し、平均値の信頼区間を推定したい。
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-# install.packages("tidyverse")
+install.packages("tidyverse")
 library(tidyverse)
 ```
 
+## R Markdown
 
 ```{r}
 # データの確認
@@ -57,7 +58,7 @@ plot_bootstrap_hist <- function(bootstrap_sample, title = "bootstrap mean"){
   gp
 }
 
-plot_bootstrap_hist(mean_boot)
+plot_bootstrap_hist(mean_boot)ß
 ```
 
 
