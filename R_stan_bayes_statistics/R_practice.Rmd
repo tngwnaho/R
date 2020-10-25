@@ -1,0 +1,139 @@
+---
+title: "Untitled"
+author: "Naho Tanigawa"
+date: "10/13/2020"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 行列の作成
+
+```{r}
+matrix_1 <- matrix(
+  data = 1:10, #データ
+  nrow = 2, #２行にする
+  byrow = TRUE #行(横)の順番で格納する
+  
+)
+matrix_1
+
+#行名と列名を格納
+rownames(matrix_1) <- c("Row1", "Row2")
+colnames(matrix_1) <- c("Col1", "Col2", "Col3", "Col4", "Col5")
+matrix_1
+```
+
+## 配列の作成
+
+```{r}
+array_1 <- array(
+  data = 1:30, #データ
+  dim = c(3,5,2) #行数、列数、行列の数
+)
+array_1
+```
+
+## データフレームの作成
+
+```{r}
+data_frame_1 <- data.frame(
+  col1 = c("A", "B", "C", "D", "E"),
+  col2 = c(1,2,3,4,5)
+)
+data_frame_1
+```
+
+
+## リストの作成
+
+```{r}
+list_1 <- list(
+  chara = c("A", "B", "C"),
+  matrix = matrix_1,
+  df = data_frame_1
+)
+list_1
+```
+
+
+## カーネル密度関数
+
+### データ準備
+```{r}
+set.seed(1)
+fish <- data.frame(rnorm(100, 30, 10))
+colnames(fish) <- c("length")
+head(fish)
+```
+
+### カーネル密度推定
+```{r}
+kernel_density <- density(fish$length)
+plot(kernel_density)
+```
+
+```{r}
+#バンド幅をadjust倍に変更します
+#バンド幅を大きくとると、分布関数は滑らかに近似され、真の分布関数とは異なったものになってしまう
+#hを小さくすると、必要以上に凸凹になり、真の分布関数とかかけ離れたものになってしまう
+kernel_density_quarter <- density(fish$length, adjust = 0.25)
+# kernel_density_quarter <- density(fish$length, adjust = 0.7)
+kernel_density_quadruple <- density(fish$length, adjust = 4)
+# kernel_density_quadruple <- density(fish$length, adjust = 8)
+
+#結果の可視化
+plot(kernel_density, 
+     lwd = 2, #線の太さ
+     xlab = "", #x軸のラベル名称をなくす
+     ylim = c(0, 0.1), #y軸の範囲
+     main = " バンド幅を変える " #グラフのタイトル
+     )
+lines(kernel_density_quarter, col = 2)
+lines(kernel_density_quadruple, col = 4)
+
+legend(
+  "topleft", #凡例の位置
+  col = c(1,2,4), #線の色
+  lwd = 1, #線の太さ
+  bty = "n", #凡例の囲み線を消す
+  legend = c("標準", "ハンド幅 1/4", "バンド幅4倍")
+)
+```
+
+### 自己共分散・自己相関係数・コレログラム
+
+```{r}
+# Nile というデータを使う
+# 過去のデータと今のデータの相関係数を、自己相関係数という
+# 標本から作成されたものは、標本自己相関と呼ばれる
+Nile
+
+# 標本自己共分散
+acf(
+  Nile, #データ
+  type = "covariance", #自己共分散を計算
+  plot = F,
+  lag.max = 5
+)
+
+# 標本自己相関
+acf(
+  Nile, #データ
+  plot = F,
+  lag.max = 5
+)
+
+# 標本自己相関(コレログラムの表示あり)
+# 左軸の縦棒は、0時点前の自己相関を表す
+# 自己相関の値がプラスになっているので、「前の時点の値が大きければ、次の時点の値も大きくなる」ということを表す
+# 青色は、95%信頼区間
+acf(
+  Nile, #データ
+  plot = T,
+  lag.max = 5
+)
+```
+
